@@ -14,8 +14,8 @@
         "illuminate/database": "5.4.*"
     },
     "autoload": {
-	    "psr-r": {
-            "SW\\Notebook\\": "src"
+	    "psr-4": {
+            "SW\\Notebook\\": "src/"
 	    }
     }
 }
