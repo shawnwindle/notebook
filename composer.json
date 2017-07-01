@@ -1,0 +1,21 @@
+{
+    "name": "sw/notebook",
+    "description": "Addons for Laravel Eloquent's ORM",
+    "keywords": ["laravel", "eloquent", "database"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Shawn Windle",
+            "email": "fearloathing2001@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.4",
+        "illuminate/database": "5.4.*"
+    },
+    "autoload": {
+	    "psr-r": {
+            "SW\\Notebook\\": "src"
+	    }
+    }
+}
