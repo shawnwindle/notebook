@@ -41,14 +41,11 @@ class Model extends BaseModel
      */
     protected function decodeAttributeValue($key,$value)
     {
-        foreach($this->mutators as $class => $attributes)
+        if(isset($this->mutators[$key]))
         {
-            if(in_array($key,$attributes))
-            {
-                $mutator = new $class;
+            $mutator = new $this->mutators[$key];
 
-                return $mutator->decode($value);
-            }
+            return $mutator->decode($value);
         }
 
         return $value;
@@ -80,14 +77,11 @@ class Model extends BaseModel
      */
     protected function encodeAttributeValue($key,$value)
     {
-        foreach($this->mutators as $class => $attributes)
+        if(isset($this->mutators[$key]))
         {
-            if(in_array($key,$attributes))
-            {
-                $mutator = new $class;
+            $mutator = new $this->mutators[$key];
 
-                return $mutator->encode($value);
-            }
+            return $mutator->encode($value);
         }
 
         return $value;
