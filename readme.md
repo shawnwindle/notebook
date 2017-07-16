@@ -72,3 +72,20 @@ class MoneyMutator extends SW\Notebook\Mutator
 
 By following the method detailed above, you only write the code once and it
 can be applied to many different attributes, even across models.
+
+2) Short circuit one-to-many and many-to-many
+
+In some circumstances, you may want a relationship to return all instead of just what's in the database.
+
+Say, for example, you had permissions and permission groups in your project. Some permission groups (i.e. 
+Administrators) should always get all permissions no matter what was set in the UI (reflected by what's in
+the database).
+
+The relationship would do something like:
+
+public function permissions()
+{
+    if(permission group is Administrator)
+        return $this->belongsToManyAll(permissions model string);
+    return $this->belongsToMany(fields like normal);
+}

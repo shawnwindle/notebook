@@ -4,6 +4,8 @@ namespace SW\Notebook;
 
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 class Model extends BaseModel
 {
     /**
@@ -85,5 +87,30 @@ class Model extends BaseModel
         }
 
         return $value;
+    }
+    
+    /**
+     * Special relationship to return all instances even if not assigned.
+     *
+     * @param  string  $related
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    protected function hasManyAll($related)
+    {
+        $builder = call_user_func([$related, 'whereNotNull'], $this->primaryKey)
+            ->orWhereNotNull($this->primaryKey);
+
+        return new HasMany($builder,$this,$this->primaryKey,$this->primaryKey);
+    }
+
+    /**
+     * Special relationship to return all instances even if not assigned.
+     *
+     * @param  string  $related
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    protected function belongsToManyAll($related)
+    {
+        return $this->hasManyAll($related);
     }
 }
