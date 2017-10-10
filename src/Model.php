@@ -4,7 +4,7 @@ namespace SW\Notebook;
 
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use SW\Notebook\Relations\BelongsToManyAll;
 
 class Model extends BaseModel
 {
@@ -90,27 +90,34 @@ class Model extends BaseModel
     }
     
     /**
-     * Special relationship to return all instances even if not assigned.
+     * Define a many-to-many relationship.
      *
      * @param  string  $related
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @param  string  $table
+     * @param  string  $foreignKey
+     * @param  string  $relatedKey
+     * @return \SW\Notebook\Relations\BelongsToManyAll
      */
-    protected function hasManyAll($related)
+    public function belongsToManyAll($related, $table = null, $foreignKey = null, $relatedKey = null)
     {
-        $builder = call_user_func([$related, 'whereNotNull'], $this->primaryKey)
-            ->orWhereNotNull($this->primaryKey);
+        // First, we'll need to determine the foreign key and "other key" for the
+        // relationship. Once we have determined the keys we'll make the query
+        // instances as well as the relationship instances we need for this.
+        $instance = $this->newRelatedInstance($related);
 
-        return new HasMany($builder,$this,$this->primaryKey,$this->primaryKey);
-    }
+        $foreignKey = $foreignKey ?: $this->getForeignKey();
 
-    /**
-     * Special relationship to return all instances even if not assigned.
-     *
-     * @param  string  $related
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    protected function belongsToManyAll($related)
-    {
-        return $this->hasManyAll($related);
+        $relatedKey = $relatedKey ?: $instance->getForeignKey();
+
+        // If no table name was provided, we can guess it by concatenating the two
+        // models using underscores in alphabetical order. The two model names
+        // are transformed to snake case from their default CamelCase also.
+        if (is_null($table)) {
+            $table = $this->joiningTable($related);
+        }
+
+        return new BelongsToManyAll(
+            $instance->newQuery(), $this, $table, $foreignKey, $relatedKey
+        );
     }
 }
