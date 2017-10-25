@@ -484,6 +484,9 @@ class BelongsToManyAll extends Relation
 
         $builder = $this->query->applyScopes();
 
+        //CHANGE: added
+        $builder->groupBy($this->related->getKeyName());
+
         $models = $builder->addSelect(
             $this->shouldSelect($columns)
         )->getModels();
